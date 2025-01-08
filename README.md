@@ -10,7 +10,7 @@ A naive implementation is when the knob (and the value) follows the mouse pointe
 
 In case of a real knob, once the user got stuck, there is only one way to unstuck and set other values: by going back on the path. In mouse/touch GUI, when the knob is in stuck, the user still can continue grabbing the pointer, and go to any position. The big question is when the the stuck state should end.
 
-In current implementation, if the knob is stuck at -90% or +90%, the stuck state ends at -90%..0 and 0..+90%, respectively. Maybe these values should be -50%..0 and 0..50%, avoid jumping from -90% to 0 or +90% to 0.
+In current implementation, if the knob is stuck at -90% or +90%, the stuck state ends at -90%..-70% and +70%..+90%, respectively, avoid jumping from -90% to a distant position.
 
 A perfect handling would be to check the direction of the move, and un-stuck only when the user got to the position by turned back on the path.
 
