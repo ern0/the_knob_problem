@@ -14,6 +14,8 @@ In current implementation, if the knob is stuck at -90% or +90%, the stuck state
 
 A perfect handling would be to check the direction of the move, and un-stuck only when the user got to the position by turned back on the path.
 
+It has another issue: grabbing the knob at near to its center may lead to skip the dead zone (-90%..+90%). This should be eliminated by disabling the center of the knob.
+
 ## Show
 
 This little example demonstrates the solution. The gray upper field shows the naive value.
