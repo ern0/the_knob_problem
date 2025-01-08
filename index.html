@@ -56,17 +56,37 @@
         let is_dragging = false;
         let stuck_range = 0;
 
-        knob.addEventListener('mousedown', function(e) {
-            is_dragging = true;
-        });
+        knob.addEventListener('mousedown', start_drag);
+        knob.addEventListener('touchstart', start_drag);
+        document.addEventListener('mousemove', proc_drag);
+        document.addEventListener('touchmove', proc_drag);
+        document.addEventListener('mouseup', stop_drag);
+        document.addEventListener('touchend', stop_drag);
 
-        document.addEventListener('mousemove', function(e) {
+        function start_drag() {
+            is_dragging = true;
+        }
+        function stop_drag() {
+            is_dragging = false;
+        }
+
+        function proc_drag(e) {
             if (!is_dragging) return;
+
+            if (e.type == 'touchmove') {
+                const { touches, changedTouches } = e.originalEvent ?? e;
+                const touch = touches[0] ?? changedTouches[0];
+                x = touch.pageX;
+                y = touch.pageY;
+            } else if (e.type == 'mousemove') {
+                x = e.clientX;
+                y = e.clientY;
+            }
 
             const rect = knob.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI) + 90;
+            const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI) + 90;
 
             let deg = angle;
             if (deg < 0) deg = 360 + deg;
@@ -100,11 +120,7 @@
             let value_elm = document.getElementById('value');
             value_elm.innerHTML = value;
 
-        });
-
-        document.addEventListener('mouseup', function(e) {
-            is_dragging = false;
-        });
+        }
     </script>
 </body>
 </html>
