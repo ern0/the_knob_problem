@@ -30,6 +30,7 @@
             left: 0;
             width: 100%;
             font-weight: bold;
+            user-select: none;
         }
         #naive {
             color: lightgrey;
@@ -93,12 +94,12 @@
 
             if (stuck_range == 0) {
                 value = naive;
+                indicator.style.transform = `translateX(-50%) rotate(${angle}deg)`;
             }
 
             let value_elm = document.getElementById('value');
             value_elm.innerHTML = value;
 
-            indicator.style.transform = `translateX(-50%) rotate(${angle}deg)`;
         });
 
         document.addEventListener('mouseup', function(e) {
