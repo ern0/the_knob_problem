@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knob Control</title>
+    <style>
+        .knob {
+            width: 100px;
+            height: 100px;
+            background-color: #ccc;
+            border-radius: 50%;
+            position: relative;
+            margin: 50px auto;
+        }
+        .indicator {
+            width: 10px;
+            height: 50px;
+            background-color: #333;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(0deg);
+        }
+        .num {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24px;
+            text-align: center;
+            left: 0;
+            width: 100%;
+            font-weight: bold;
+        }
+        #naive {
+            color: lightgrey;
+            position: absolute;
+            top: 150px;
+        }
+        #value {
+            position: absolute;
+            top: 180px;
+        }
+    </style>
+</head>
+<body>
+    <div class="knob" id="knob">
+        <div class="indicator" id="indicator"></div>
+    </div>
+    <div class="num" id="naive">0</div>
+    <div class="num" id="value">0</div>
+
+    <script>
+        const knob = document.getElementById('knob');
+        const indicator = document.getElementById('indicator');
+        let is_dragging = false;
+        let stuck_range = 0;
+
+        knob.addEventListener('mousedown', function(e) {
+            is_dragging = true;
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!is_dragging) return;
+
+            const rect = knob.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI) + 90;
+
+            let deg = angle;
+            if (deg < 0) deg = 360 + deg;
+            if (deg >= 180) deg = -(360 - deg);
+            let naive = Math.round(deg * 100 / 180);
+            let naive_elm = document.getElementById('naive');
+            naive_elm.innerHTML = naive;
+
+            if (stuck_range == 0) {
+                if (value > 90) {
+                    stuck_range = +1;
+                    value = 90;
+                }
+                if (value < -90) {
+                    stuck_range = -1;
+                    value = -90;
+                }
+            } else {
+                if (stuck_range == +1) {
+                    if ((0 < naive) && (naive < 90)) stuck_range = 0;
+                } else {
+                    if ((naive < 0) && (-90 < naive)) stuck_range = 0;
+                }
+            }
+
+            if (stuck_range == 0) {
+                value = naive;
+            }
+
+            let value_elm = document.getElementById('value');
+            value_elm.innerHTML = value;
+
+            indicator.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            is_dragging = false;
+        });
+    </script>
+</body>
+</html>
